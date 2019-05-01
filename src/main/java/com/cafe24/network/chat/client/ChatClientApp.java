@@ -54,7 +54,7 @@ public class ChatClientApp {
 			System.out.println(pr);
 			
 				
-			pr.println("JOIN::"+name+"::"+pr);
+			pr.println("JOIN::"+name);
 			
 			scanner.close();
 
@@ -66,6 +66,7 @@ public class ChatClientApp {
 
 	}
 
+	
 	public static void log(String log) {
 		System.out.println("[client] " + log);
 	}

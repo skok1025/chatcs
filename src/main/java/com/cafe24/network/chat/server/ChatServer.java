@@ -7,13 +7,17 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
-public class EchoServer {
+public class ChatServer {
 	private static final int PORT = 7006;
 	
 	public static List<PrintWriter> prList = new ArrayList<PrintWriter>();
+	public static Map<PrintWriter, String> userMap = new HashMap<PrintWriter, String>();
+	
 	
 	public static void main(String[] args) {
 		ServerSocket serverSocket = null;
@@ -34,7 +38,7 @@ public class EchoServer {
 			//3. accept
 				Socket socket = serverSocket.accept();
 				
-				Thread thread = new EchoServerReceiveThread(socket);
+				Thread thread = new ChatReceiveThread(socket);
 				thread.start();
 			}
 			

@@ -45,7 +45,7 @@ public class ChatWindow {
 	
 	private void finish() {
 		pr.println("EXIT::NULL"+"::"+pr);
-
+		//pr.println(ChatClientApp.getProtocol("EXIT", name, pr));
 		
 		// socket 정리
 		try {
@@ -121,7 +121,6 @@ public class ChatWindow {
 				updateTextArea(data);
 				
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
@@ -139,7 +138,7 @@ public class ChatWindow {
 	private void sendMessage() {
 		
 		String message = textField.getText();
-		pr.println("MSG::"+message+"::"+pr);
+		pr.println("MSG::"+message);
 		
 		textField.setText("");
 		textField.requestFocus();
