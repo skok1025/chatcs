@@ -19,7 +19,7 @@ import java.util.Scanner;
 public class ChatClientApp {
 
 	private static final String SERVER_IP = "192.168.1.34";
-	private static final int SERVER_PORT = 7006;
+	private static final int SERVER_PORT = 7008;
 
 	public static void main(String[] args) {
 		String name = null;
@@ -55,8 +55,7 @@ public class ChatClientApp {
 			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
 			PrintWriter pr = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true); // autoFlush
 																												// true
-			System.out.println(pr);
-			
+			//System.out.println(pr);
 				
 			pr.println("JOIN::"+name);
 			

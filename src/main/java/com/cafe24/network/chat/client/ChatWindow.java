@@ -24,10 +24,11 @@ import java.net.Socket;
  */
 public class ChatWindow {
 	
-	
+	private String name;
 	private Socket socket;
 	private BufferedReader br;
 	private PrintWriter pr;
+	
 	
 
 	private Frame frame;
@@ -38,6 +39,8 @@ public class ChatWindow {
 
 	public ChatWindow(String name,Socket socket,BufferedReader br,PrintWriter pr) {
 		frame = new Frame(name);
+		this.name = name;
+		
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
@@ -49,7 +52,7 @@ public class ChatWindow {
 	}
 	
 	private void finish() {
-		pr.println("EXIT::NULL"+"::"+pr);
+		pr.println("EXIT::"+name);
 		//pr.println(ChatClientApp.getProtocol("EXIT", name, pr));
 		
 		// socket 정리
@@ -68,7 +71,9 @@ public class ChatWindow {
 	}
 	
 	
-	
+	/**
+	 * GUI 환경 제공 메소드
+	 */
 	public void show() { // thread 작업만
 		// Button
 		buttonSend.setBackground(Color.GRAY);
@@ -101,6 +106,7 @@ public class ChatWindow {
 
 		// TextArea
 		textArea.setEditable(false);
+		
 		frame.add(BorderLayout.CENTER, textArea);
 
 		// Frame
@@ -134,12 +140,19 @@ public class ChatWindow {
 		
 	}
 	
+	/**
+	 * 상단 메세지 상태창에 메세지를 추가하는 메소드
+	 * @param message 추가된 메세지
+	 */
 	private void updateTextArea(String message) {
 		
 		textArea.append(message);
 		textArea.append("\n");
 	}
 	
+	/**
+	 * 메세지를 서버로 전송하는 메소드
+	 */
 	private void sendMessage() {
 		
 		String message = textField.getText();
@@ -153,8 +166,11 @@ public class ChatWindow {
 	}
 	
 	
-	
-	public static void log(String log) {
-		System.out.println("[client] " + log);
+	/**
+	 * 클라이언트 입장에서 log 메세지를 기록하는 메소드
+	 * @param message
+	 */
+	public static void log(String message) {
+		System.out.println("[client] " + message);
 	}
 }

@@ -17,7 +17,7 @@ import java.util.Map;
  *
  */
 public class ChatServer {
-	private static final int PORT = 7006;
+	private static final int PORT = 7008;
 	
 	public static List<PrintWriter> prList = new ArrayList<PrintWriter>();
 	public static Map<PrintWriter, String> userMap = new HashMap<PrintWriter, String>();
@@ -63,7 +63,7 @@ public class ChatServer {
 	}
 	
 	/**
-	 * 서버입장에서 log 메세지를 출력하는 메소드
+	 * 서버입장에서 log 메세지를 기록하는 메소드
 	 * @param message log 메세지
 	 */
 	public static void log(String message) {
