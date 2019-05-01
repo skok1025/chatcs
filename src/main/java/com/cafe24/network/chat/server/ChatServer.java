@@ -11,7 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * 서버에서 accept 메소드를 통해 Socket을 받아오는 클래스
+ * @author 김석현
+ *
+ */
 public class ChatServer {
 	private static final int PORT = 7006;
 	
@@ -58,7 +62,11 @@ public class ChatServer {
 		}
 	}
 	
-	public static void log(String log) {
-		System.out.println("[server#"+Thread.currentThread().getId()+"] " + log);
+	/**
+	 * 서버입장에서 log 메세지를 출력하는 메소드
+	 * @param message log 메세지
+	 */
+	public static void log(String message) {
+		System.out.println("[server#"+Thread.currentThread().getId()+"] " + message);
 	}
 }

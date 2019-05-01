@@ -11,6 +11,11 @@ import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 프로토콜에 따른 데이터 처리와 브로드캐스트 역할을 하는 클래스
+ * @author 김석현
+ *
+ */
 public class ChatReceiveThread extends Thread {
 	
 	private Socket socket;
@@ -59,6 +64,11 @@ public class ChatReceiveThread extends Thread {
 				String protocol = datas[0];
 				String message = datas[1];
 				
+				if(data == null) {
+					ChatServer.log("closed by client");
+					break;
+				}
+			
 				for(PrintWriter printWriter:ChatServer.prList) {
 					if(printWriter == pr) {	// 해당 보내는 클라이언트인지 확인
 						ChatServer.log(data);
@@ -69,12 +79,6 @@ public class ChatReceiveThread extends Thread {
 							ChatServer.userMap.remove(pr);
 						} 
 					}
-				}
-				
-				
-				if(data == null) {
-					ChatServer.log("closed by client");
-					break;
 				}
 				
 				ChatServer.log("received:" + data);
@@ -90,7 +94,7 @@ public class ChatReceiveThread extends Thread {
 			e.printStackTrace();
 		}finally {
 			try {
-				if(socket != null && socket.isClosed() == false ) {
+				if(socket != null && !socket.isClosed()  ) {
 					socket.close();
 				}
 			}catch(IOException e) {

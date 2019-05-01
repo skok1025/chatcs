@@ -11,7 +11,11 @@ import java.net.SocketException;
 import java.util.Scanner;
 
 
-
+/**
+ * 대화명을 입력하고  ChatWindow 를 띄우는 역할의 클래스
+ * @author 김석현
+ *
+ */
 public class ChatClientApp {
 
 	private static final String SERVER_IP = "192.168.1.34";
@@ -67,8 +71,12 @@ public class ChatClientApp {
 	}
 
 	
-	public static void log(String log) {
-		System.out.println("[client] " + log);
+	/**
+	 * 클라이언트 입장에서 log 메세지를 남기는 메소드
+	 * @param message log 메세지
+	 */
+	public static void log(String message) {
+		System.out.println("[client] " + message);
 	}
 
 }

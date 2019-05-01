@@ -17,6 +17,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * 채팅 윈도우 환경을 제공하는 클래스
+ * @author 김석현
+ *
+ */
 public class ChatWindow {
 	
 	
@@ -120,8 +125,8 @@ public class ChatWindow {
 				
 				updateTextArea(data);
 				
-			} catch (IOException e1) {
-				e1.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 			
 		}
