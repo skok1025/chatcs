@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 
 /**
  * 채팅 윈도우 환경을 제공하는 클래스
@@ -28,6 +29,7 @@ public class ChatWindow {
 	private Socket socket;
 	private BufferedReader br;
 	private PrintWriter pr;
+	private List<String> userList;
 	
 	
 
@@ -36,15 +38,18 @@ public class ChatWindow {
 	private Button buttonSend;
 	private TextField textField;
 	private TextArea textArea;
+	private TextArea userListArea;
 
-	public ChatWindow(String name,Socket socket,BufferedReader br,PrintWriter pr) {
+	public ChatWindow(String name,Socket socket,BufferedReader br,PrintWriter pr,List<String> userList) {
 		frame = new Frame(name);
 		this.name = name;
+		this.userList = userList;
 		
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
 		textArea = new TextArea(30, 80);
+		userListArea = new TextArea(5,20);
 		
 		this.socket = socket;
 		this.br = br;
@@ -106,9 +111,16 @@ public class ChatWindow {
 
 		// TextArea
 		textArea.setEditable(false);
+		userListArea.setEditable(false);
 		
 		frame.add(BorderLayout.CENTER, textArea);
-
+		
+		userListArea.setBackground(Color.LIGHT_GRAY);
+		
+		
+		frame.add(BorderLayout.EAST, userListArea);
+		
+		
 		// Frame
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -124,6 +136,27 @@ public class ChatWindow {
 			try {
 				String data = br.readLine();
 				
+				// 대화방 리스트 출력하기 
+				if(data.endsWith("님이 입장 하였습니다.")) {
+					String addUser = data.split(" ")[0];
+					userList.add(addUser);
+					updateUserList();
+				}
+				
+				if(data.endsWith("님이 퇴장 하였습니다")) {
+					String removeUser = data.split(" ")[0];
+					int index = 0;
+					for(String userName:userList) {
+						if(userName.equals(removeUser)) {
+							userList.remove(index);
+							break;
+						}
+						index++;
+					}
+					updateUserList();
+				}
+				// 대화방 리스트 출력하기
+				
 				if(data == null) {
 					log("closed by server");
 					break;
@@ -138,6 +171,14 @@ public class ChatWindow {
 		}
 		
 		
+	}
+	
+	private void updateUserList() {
+		userListArea.setText("<<참여자리스트>>\n");
+		
+		for(String userName:userList) {
+			userListArea.append(userName+"\n");
+		}
 	}
 	
 	/**

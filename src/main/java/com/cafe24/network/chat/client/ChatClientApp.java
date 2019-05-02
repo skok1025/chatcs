@@ -8,6 +8,8 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -57,7 +59,12 @@ public class ChatClientApp {
 				
 			
 			String[] userNames = br.readLine().split(",");
+			List<String> userList = new ArrayList<String>();
+			
+			
 			for(String userName:userNames) {
+				userList.add(userName);
+				
 				if(name.equals(userName)) {
 					System.out.println("대화명이 중복됩니다. 클라이언트를 종료합니다.");
 					System.exit(0);
@@ -69,7 +76,7 @@ public class ChatClientApp {
 			
 			scanner.close();
 
-			new ChatWindow(name,socket, br, pr).show();
+			new ChatWindow(name,socket, br, pr, userList).show();
 
 		} catch (IOException e) {
 			e.printStackTrace();

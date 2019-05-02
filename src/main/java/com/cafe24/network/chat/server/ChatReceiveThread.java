@@ -59,7 +59,7 @@ public class ChatReceiveThread extends Thread {
 				ChatServer.userMap.put(pr, name);
 				ChatServer.prList.add(pr);
 				ChatServer.log(firstData);
-				Broadcast(ChatServer.userMap.get(pr) + "님이 입장 하였습니다.");
+				Broadcast(ChatServer.userMap.get(pr) + " 님이 입장 하였습니다.");
 
 				ChatServer.log("received:" + ChatServer.userMap.get(pr) + "님이 입장 하였습니다.");
 
@@ -84,11 +84,14 @@ public class ChatReceiveThread extends Thread {
 						ChatServer.log(data);
 						if ("MSG".equals(protocol)) {
 							data = ChatServer.userMap.get(pr) + ":" + message;
+							
 						} else if ("EXIT".equals(protocol)) {
-							data = ChatServer.userMap.get(pr) + "님이 퇴장 하였습니다";
+							data = ChatServer.userMap.get(pr) + " 님이 퇴장 하였습니다";
 							ChatServer.userMap.remove(pr);
+							
 							pr.close();
 						}
+						break;
 					}
 				}
 
@@ -121,6 +124,16 @@ public class ChatReceiveThread extends Thread {
 	 */
 	private void Broadcast(String message) {
 		for (PrintWriter printwriter : ChatServer.prList) {
+			printwriter.println(message);
+		}
+
+	}
+	
+	private void ExitBroadcast(PrintWriter exitpw,String message) {
+		for (PrintWriter printwriter : ChatServer.prList) {
+			if(printwriter == exitpw) {
+				continue;
+			}
 			printwriter.println(message);
 		}
 
