@@ -21,7 +21,7 @@ import java.util.Scanner;
 public class ChatClientApp {
 
 	private static final String SERVER_IP = "192.168.1.34";
-	private static final int SERVER_PORT = 7008;
+	private static final int SERVER_PORT = 7009;
 
 	public static void main(String[] args) {
 		String name = null;

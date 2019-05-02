@@ -56,24 +56,7 @@ public class ChatWindow {
 		this.pr = pr;
 	}
 	
-	private void finish() {
-		pr.println("EXIT::"+name);
-		//pr.println(ChatClientApp.getProtocol("EXIT", name, pr));
-		
-		// socket 정리
-		try {
-			if(socket!= null && !socket.isClosed()) {
-				socket.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
-		
-		System.exit(0);
-		
-	}
+	
 	
 	
 	/**
@@ -130,6 +113,8 @@ public class ChatWindow {
 		frame.setVisible(true);
 		frame.pack();
 		
+		textArea.setText("귓속말 방법: 대화창에 아래와 같이 입력하세요.\n");
+		textArea.append("(/q 대화명 메세지)\n");
 		
 		
 		while(true) {
@@ -140,7 +125,7 @@ public class ChatWindow {
 				if(data.endsWith("님이 입장 하였습니다.")) {
 					String addUser = data.split(" ")[0];
 					userList.add(addUser);
-					updateUserList();
+				
 				}
 				
 				if(data.endsWith("님이 퇴장 하였습니다")) {
@@ -153,7 +138,7 @@ public class ChatWindow {
 						}
 						index++;
 					}
-					updateUserList();
+					
 				}
 				// 대화방 리스트 출력하기
 				
@@ -161,7 +146,7 @@ public class ChatWindow {
 					log("closed by server");
 					break;
 				}
-				
+				updateUserList();
 				updateTextArea(data);
 				
 			} catch (IOException e) {
@@ -197,13 +182,39 @@ public class ChatWindow {
 	private void sendMessage() {
 		
 		String message = textField.getText();
-		pr.println("MSG::"+message);
+		if(message.startsWith("/q")) {
+			pr.println("MSG::"+message+" "+ name);
+		}else {			
+			pr.println("MSG::"+message);
+		}
 		
 		textField.setText("");
 		textField.requestFocus();
 		
 		//test
 		//updateTextArea(message);
+	}
+	
+	/**
+	 * 종료하는 메소
+	 */
+	private void finish() {
+		pr.println("EXIT::"+name);
+		//pr.println(ChatClientApp.getProtocol("EXIT", name, pr));
+		
+		// socket 정리
+		try {
+			if(socket!= null && !socket.isClosed()) {
+				socket.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		System.exit(0);
+		
 	}
 	
 	
