@@ -38,6 +38,15 @@ public class ChatReceiveThread extends Thread {
 			PrintWriter pr = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true); // autoFlush
 																												// true
 
+			// userMap 에 있는 userName 다 보내기
+			StringBuilder userNames = new StringBuilder();
+			
+			for(PrintWriter key:ChatServer.userMap.keySet()) {
+				userNames.append(ChatServer.userMap.get(key)+",");
+			}
+			
+			pr.println(userNames); // 사용자 대화명 전송
+			
 			String firstData = br.readLine();
 			String[] firstDatas = firstData.split("::");
 			String firstProtocol = firstDatas[0];

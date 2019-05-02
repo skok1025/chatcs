@@ -54,9 +54,17 @@ public class ChatClientApp {
 			// 4. IOStream 생성(받아오기)
 			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
 			PrintWriter pr = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true); // autoFlush
-																												// true
-			//System.out.println(pr);
 				
+			
+			String[] userNames = br.readLine().split(",");
+			for(String userName:userNames) {
+				if(name.equals(userName)) {
+					System.out.println("대화명이 중복됩니다. 클라이언트를 종료합니다.");
+					System.exit(0);
+					break;
+				}
+			}
+			
 			pr.println("JOIN::"+name);
 			
 			scanner.close();
