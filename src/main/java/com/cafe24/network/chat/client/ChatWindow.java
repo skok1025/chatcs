@@ -1,4 +1,5 @@
 package com.cafe24.network.chat.client;
+
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
@@ -20,18 +21,17 @@ import java.util.List;
 
 /**
  * 채팅 윈도우 환경을 제공하는 클래스
+ * 
  * @author 김석현
  *
  */
 public class ChatWindow {
-	
+
 	private String name;
 	private Socket socket;
 	private BufferedReader br;
 	private PrintWriter pr;
 	private List<String> userList;
-	
-	
 
 	private Frame frame;
 	private Panel pannel;
@@ -40,25 +40,22 @@ public class ChatWindow {
 	private TextArea textArea;
 	private TextArea userListArea;
 
-	public ChatWindow(String name,Socket socket,BufferedReader br,PrintWriter pr,List<String> userList) {
+	public ChatWindow(String name, Socket socket, BufferedReader br, PrintWriter pr, List<String> userList) {
 		frame = new Frame(name);
 		this.name = name;
 		this.userList = userList;
-		
+
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
 		textArea = new TextArea(30, 80);
-		userListArea = new TextArea(5,20);
-		
+		userListArea = new TextArea(5, 20);
+
 		this.socket = socket;
 		this.br = br;
 		this.pr = pr;
 	}
-	
-	
-	
-	
+
 	/**
 	 * GUI 환경 제공 메소드
 	 */
@@ -66,9 +63,9 @@ public class ChatWindow {
 		// Button
 		buttonSend.setBackground(Color.GRAY);
 		buttonSend.setForeground(Color.WHITE);
-		buttonSend.addActionListener( new ActionListener() {
+		buttonSend.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed( ActionEvent actionEvent ) {
+			public void actionPerformed(ActionEvent actionEvent) {
 				sendMessage();
 			}
 		});
@@ -79,11 +76,11 @@ public class ChatWindow {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				char keyCode = e.getKeyChar();
-				if(keyCode == KeyEvent.VK_ENTER) {
+				if (keyCode == KeyEvent.VK_ENTER) {
 					sendMessage();
 				}
 			}
-			
+
 		});
 
 		// Pannel
@@ -95,15 +92,13 @@ public class ChatWindow {
 		// TextArea
 		textArea.setEditable(false);
 		userListArea.setEditable(false);
-		
+
 		frame.add(BorderLayout.CENTER, textArea);
-		
+
 		userListArea.setBackground(Color.LIGHT_GRAY);
-		
-		
+
 		frame.add(BorderLayout.EAST, userListArea);
-		
-		
+
 		// Frame
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -112,114 +107,112 @@ public class ChatWindow {
 		});
 		frame.setVisible(true);
 		frame.pack();
-		
+
 		textArea.setText("귓속말 방법: 대화창에 아래와 같이 입력하세요.\n");
 		textArea.append("(/q 대화명 메세지)\n");
-		
-		
-		while(true) {
+
+		while (true) {
 			try {
 				String data = br.readLine();
-				
-				// 대화방 리스트 출력하기 
-				if(data.endsWith("님이 입장 하였습니다.")) {
-					String addUser = data.split(" ")[0];
-					userList.add(addUser);
-				
-				}
-				
-				if(data.endsWith("님이 퇴장 하였습니다")) {
-					String removeUser = data.split(" ")[0];
-					int index = 0;
-					for(String userName:userList) {
-						if(userName.equals(removeUser)) {
-							userList.remove(index);
-							break;
-						}
-						index++;
+				if (data != null) {
+
+					// 대화방 리스트 출력하기
+					if (data.endsWith("님이 입장 하였습니다.")) {
+						String addUser = data.split(" ")[0];
+						userList.add(addUser);
+
 					}
-					
+
+					if (data.endsWith("님이 퇴장 하였습니다")) {
+						String removeUser = data.split(" ")[0];
+						int index = 0;
+						for (String userName : userList) {
+							if (userName.equals(removeUser)) {
+								userList.remove(index);
+								break;
+							}
+							index++;
+						}
+
+					}
+					// 대화방 리스트 출력하기
+
+					if (data == null) {
+						log("closed by server");
+						break;
+					}
+					updateUserList();
+					updateTextArea(data);
 				}
-				// 대화방 리스트 출력하기
-				
-				if(data == null) {
-					log("closed by server");
-					break;
-				}
-				updateUserList();
-				updateTextArea(data);
-				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
-		
+
 	}
-	
+
 	private void updateUserList() {
 		userListArea.setText("<<참여자리스트>>\n");
-		
-		for(String userName:userList) {
-			userListArea.append(userName+"\n");
+
+		for (String userName : userList) {
+			userListArea.append(userName + "\n");
 		}
 	}
-	
+
 	/**
 	 * 상단 메세지 상태창에 메세지를 추가하는 메소드
+	 * 
 	 * @param message 추가된 메세지
 	 */
 	private void updateTextArea(String message) {
-		
+
 		textArea.append(message);
 		textArea.append("\n");
 	}
-	
+
 	/**
 	 * 메세지를 서버로 전송하는 메소드
 	 */
 	private void sendMessage() {
-		
+
 		String message = textField.getText();
-		if(message.startsWith("/q")) {
-			pr.println("MSG::"+message+" "+ name);
-		}else {			
-			pr.println("MSG::"+message);
+		if (message.startsWith("/q")) {
+			pr.println("MSG::" + message + ":sender:" + name);
+		} else {
+			pr.println("MSG::" + message);
 		}
-		
+
 		textField.setText("");
 		textField.requestFocus();
-		
-		//test
-		//updateTextArea(message);
+
+		// test
+		// updateTextArea(message);
 	}
-	
+
 	/**
-	 * 종료하는 메소
+	 * 종료하는 메소드
 	 */
 	private void finish() {
-		pr.println("EXIT::"+name);
-		//pr.println(ChatClientApp.getProtocol("EXIT", name, pr));
-		
+		pr.println("EXIT::" + name);
+		// pr.println(ChatClientApp.getProtocol("EXIT", name, pr));
+
 		// socket 정리
 		try {
-			if(socket!= null && !socket.isClosed()) {
+			if (socket != null && !socket.isClosed()) {
 				socket.close();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
+
 		System.exit(0);
-		
+
 	}
-	
-	
+
 	/**
 	 * 클라이언트 입장에서 log 메세지를 기록하는 메소드
+	 * 
 	 * @param message
 	 */
 	public static void log(String message) {

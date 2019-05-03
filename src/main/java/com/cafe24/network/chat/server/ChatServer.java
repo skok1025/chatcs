@@ -17,7 +17,7 @@ import java.util.Map;
  *
  */
 public class ChatServer {
-	private static final int PORT = 7009;
+	private static final int PORT = 7013;
 	
 	public static List<PrintWriter> prList = new ArrayList<PrintWriter>();
 	public static Map<PrintWriter, String> userMap = new HashMap<PrintWriter, String>();

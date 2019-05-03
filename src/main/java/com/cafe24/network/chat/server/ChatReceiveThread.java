@@ -66,49 +66,57 @@ public class ChatReceiveThread extends Thread {
 
 			while (true) {
 				// 5. 데이터 읽기
+
 				String data = br.readLine();
+
 				String[] datas = data.split("::");
-				String protocol = datas[0];
-				String message = datas[1];
+				if (datas.length >= 2) {
+					String protocol = datas[0];
+					String message = datas[1];
 
-				if (data == null) {
-					ChatServer.log("closed by client");
-					break;
-				}
-
-				if (data.startsWith("MSG::/q")) { // 귓속말모드 (/q 아이디 메세지)
-
-					String[] qDatas = data.split(" ");
-					if (qDatas.length == 4) { // MSG::/q 받는사람 메세지 보내는사람
-						String qReceive = qDatas[1];
-						String qMessage = qDatas[2];
-						String qSend = qDatas[3];
-
-						Multicast(qSend, qReceive, qMessage);
+					if (data == null) {
+						ChatServer.log("closed by client");
+						break;
 					}
 
-				} else { // 일반모드
-					for (PrintWriter printWriter : ChatServer.prList) {
-						if (printWriter == pr) { // 해당 보내는 클라이언트인지 확인
-							ChatServer.log(data);
-							if ("MSG".equals(protocol)) {
-								data = ChatServer.userMap.get(pr) + ":" + message;
+					if (data.startsWith("MSG::/q")) { // 귓속말모드 (/q 아이디 메세지)
+						String[] qMessageSender = data.split(":sender:");
 
-							} else if ("EXIT".equals(protocol)) {
-								data = ChatServer.userMap.get(pr) + " 님이 퇴장 하였습니다";
-								ChatServer.userMap.remove(pr);
+						String[] qDatas = qMessageSender[0].split(" ");
+						if (qDatas.length >= 3) { // MSG::/q 받는사람 메세지 보내는사람
+							String qReceive = qDatas[1];
+							String qSend = qMessageSender[1];
 
-								pr.close();
+							StringBuilder qMessage = new StringBuilder();
+							for (int i = 2; i < qDatas.length; i++) {
+								qMessage.append(qDatas[i] + " ");
 							}
-							break;
+
+							Multicast(qSend, qReceive, qMessage.toString());
 						}
+
+					} else { // 일반모드
+						for (PrintWriter printWriter : ChatServer.prList) {
+							if (printWriter == pr) { // 해당 보내는 클라이언트인지 확인
+								ChatServer.log(data);
+								if ("MSG".equals(protocol)) {
+									data = ChatServer.userMap.get(pr) + ":" + message;
+
+								} else if ("EXIT".equals(protocol)) {
+									data = ChatServer.userMap.get(pr) + " 님이 퇴장 하였습니다";
+									ChatServer.userMap.remove(pr);
+
+									pr.close();
+								}
+								break;
+							}
+						}
+						// 6. 데이터 쓰기
+						Broadcast(data);
 					}
-					// 6. 데이터 쓰기
-					Broadcast(data);
+
+					ChatServer.log("received:" + data);
 				}
-
-				ChatServer.log("received:" + data);
-
 			}
 		} catch (SocketException e) {
 			System.out.println("[server] sudden closed by client");
@@ -152,19 +160,19 @@ public class ChatReceiveThread extends Thread {
 				printWriter.println(qReceive + "<<" + qSend + "(귓속말):" + message);
 				isReceiverExist = true;
 			}
-			if (qSend.equals(ChatServer.userMap.get(printWriter))) { 
+			if (qSend.equals(ChatServer.userMap.get(printWriter))) {
 				printWriter.println(qSend + ">>" + qReceive + "(귓속말):" + message);
 			}
-			
+
 		}
-		
-		if(!isReceiverExist) { // 받는 사람이 없는 경우에
+
+		if (!isReceiverExist) { // 받는 사람이 없는 경우에
 			for (PrintWriter printWriter : ChatServer.prList) {
-				if (qSend.equals(ChatServer.userMap.get(printWriter))) { 
-					printWriter.println(qReceive +"는 존재하지 않는 대화명입니다....(귓속말 실패)" );
+				if (qSend.equals(ChatServer.userMap.get(printWriter))) {
+					printWriter.println(qReceive + "는 존재하지 않는 대화명입니다....(귓속말 실패)");
 				}
 			}
-				
+
 		}
 	}
 
